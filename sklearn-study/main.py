@@ -2,7 +2,7 @@ import jieba
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction import DictVectorizer
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 import jieba
 
 
@@ -91,6 +91,28 @@ def count_chinese_demo():
     return None
 
 
+def tfidf_demo():
+    """
+    用TF-IDF的方法进行文本特征抽取
+    :return:
+    """
+    # 1、将中文文本进行分词
+    data = ["一种还是一种今天很残酷，明天更残酷，后天很美好，但绝对大部分是死在明天晚上，所以每个人不要放弃今天。",
+            "我们看到的从很远星系来的光是在几百万年之前发出的，这样当我们看到宇宙时，我们是在看它的过去。",
+            "如果只用一种方式了解某样事物，你就不会真正了解它。了解事物真正含义的秘密取决于如何将其与我们所了解的事物相联系。"]
+    data_new = []
+    for sent in data:
+        data_new.append(cut_word(sent))
+    # 2、实例化一个转换器类
+    transfer = TfidfVectorizer(stop_words=["一种", "所以"])
+
+    # 3、调用fit_transform
+    data_final = transfer.fit_transform(data_new)
+    print("data_new:\n", data_final.toarray())
+    print("特征名字：\n", transfer.get_feature_names_out())
+    return None
+
+
 if __name__ == "__main__":
     # 代码1：sklearn数据集使用
     # datasets_demo()
@@ -101,5 +123,8 @@ if __name__ == "__main__":
     # 代码3：文本特征抽取
     # count_demo()
 
-    # 代码5：中文文本特征抽取
-    count_chinese_demo()
+    # 代码4：中文文本特征抽取
+    # count_chinese_demo()
+
+    # 代码5：用TF-IDF的方法进行文本特征抽取
+    tfidf_demo()
