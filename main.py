@@ -122,7 +122,7 @@ def minmax_demo():
     归一化演示
     :return: None
     """
-    data = pd.read_csv("sklearn-study/dating.txt")
+    data = pd.read_csv("dating.txt")
     data = data.iloc[:, :3]
     print(data)
     # 1、实例化一个转换器类
@@ -139,7 +139,7 @@ def stand_demo():
     标准化
     :return:
     """
-    data = pd.read_csv("sklearn-study/dating.txt")
+    data = pd.read_csv("dating.txt")
     data = data.iloc[:, :3]
     print(data)
     # 1、实例化一个转换器类
@@ -156,7 +156,7 @@ def variance_demo():
     删除低方差特征——特征选择
     :return: None
     """
-    data = pd.read_csv("sklearn-study/factor_returns.csv")
+    data = pd.read_csv("factor_returns.csv")
     print(data)
     # 1、实例化一个转换器类
     transfer = VarianceThreshold(threshold=5)
@@ -173,7 +173,7 @@ def pearsonr_demo():
     相关系数计算
     :return: None
     """
-    data = pd.read_csv("sklearn-study/factor_returns.csv")
+    data = pd.read_csv("factor_returns.csv")
 
     factor = ['pe_ratio', 'pb_ratio', 'market_cap', 'return_on_asset_net_profit', 'du_return_on_equity', 'ev',
               'earnings_per_share', 'revenue', 'total_expense']
