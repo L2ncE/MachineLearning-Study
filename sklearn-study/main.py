@@ -1,9 +1,13 @@
-import jieba
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from sklearn.feature_selection import VarianceThreshold
+from scipy.stats import pearsonr
+import matplotlib.pyplot as plt
 import jieba
+import pandas as pd
 
 
 def datasets_demo():
@@ -113,6 +117,79 @@ def tfidf_demo():
     return None
 
 
+def minmax_demo():
+    """
+    归一化演示
+    :return: None
+    """
+    data = pd.read_csv("sklearn-study/dating.txt")
+    data = data.iloc[:, :3]
+    print(data)
+    # 1、实例化一个转换器类
+    transfer = MinMaxScaler(feature_range=(2, 3))
+    # 2、调用fit_transform
+    data = transfer.fit_transform(data[['milage', 'Liters', 'Consumtime']])
+    print("最小值最大值归一化处理的结果：\n", data)
+
+    return None
+
+
+def stand_demo():
+    """
+    标准化
+    :return:
+    """
+    data = pd.read_csv("sklearn-study/dating.txt")
+    data = data.iloc[:, :3]
+    print(data)
+    # 1、实例化一个转换器类
+    transfer = StandardScaler()
+    # 2、调用fit_transform
+    data = transfer.fit_transform(data[['milage', 'Liters', 'Consumtime']])
+    print("标准化处理的结果：\n", data)
+
+    return None
+
+
+def variance_demo():
+    """
+    删除低方差特征——特征选择
+    :return: None
+    """
+    data = pd.read_csv("sklearn-study/factor_returns.csv")
+    print(data)
+    # 1、实例化一个转换器类
+    transfer = VarianceThreshold(threshold=5)
+    # 2、调用fit_transform
+    data = transfer.fit_transform(data.iloc[:, 1:10])
+    print("删除低方差特征的结果：\n", data)
+    print("形状：\n", data.shape)
+
+    return None
+
+
+def pearsonr_demo():
+    """
+    相关系数计算
+    :return: None
+    """
+    data = pd.read_csv("sklearn-study/factor_returns.csv")
+
+    factor = ['pe_ratio', 'pb_ratio', 'market_cap', 'return_on_asset_net_profit', 'du_return_on_equity', 'ev',
+              'earnings_per_share', 'revenue', 'total_expense']
+
+    for i in range(len(factor)):
+        for j in range(i, len(factor) - 1):
+            print(
+                "指标%s与指标%s之间的相关性大小为%f" % (
+                    factor[i], factor[j + 1], pearsonr(data[factor[i]], data[factor[j + 1]])[0]))
+
+    plt.figure(figsize=(20, 8), dpi=400)
+    plt.scatter(data['revenue'], data['total_expense'])
+    plt.show()
+    return None
+
+
 if __name__ == "__main__":
     # 代码1：sklearn数据集使用
     # datasets_demo()
@@ -127,4 +204,16 @@ if __name__ == "__main__":
     # count_chinese_demo()
 
     # 代码5：用TF-IDF的方法进行文本特征抽取
-    tfidf_demo()
+    # tfidf_demo()
+
+    # 代码6：归一化
+    # minmax_demo()
+
+    # 代码7：标准化
+    # stand_demo()
+
+    # 代码8：低方差特征过滤
+    # variance_demo()
+
+    # 代码9：相关系数
+    pearsonr_demo()
