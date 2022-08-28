@@ -31,6 +31,7 @@ def knn_iris():
     print("直接比对真实值和预测值：\n", y_test == y_predict)
 
     # 方法2：计算准确率
+    # 先用训练集造出模型再用测试集来预测并得到准确率
     score = estimator.score(x_test, y_test)
     print("准确率为：\n", score)
 
