@@ -1,12 +1,14 @@
 from sklearn.datasets import load_iris
 from sklearn.datasets import fetch_20newsgroups
+from sklearn.feature_extraction import DictVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import GridSearchCV
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import DecisionTreeClassifier, export_graphviz
+import pandas as pd
 
 
 def knn_iris():
@@ -154,6 +156,48 @@ def decision_iris():
     # 先用训练集造出模型再用测试集来预测并得到准确率
     score = estimator.score(x_test, y_test)
     print("决策树准确率为：\n", score)
+
+    # 可视化决策树
+    export_graphviz(estimator, out_file="iris_tree.dot", feature_names=iris.feature_names)
+    return None
+
+
+def decisioncls():
+    """
+    决策树进行乘客生存预测
+    :return:
+    """
+    # 1、获取数据
+    titan = pd.read_csv("titanic.csv")
+    # 2、数据的处理
+    x = titan[['pclass', 'age', 'sex']]
+
+    y = titan['survived']
+
+    # print(x , y)
+    # 缺失值需要处理，将特征当中有类别的这些特征进行字典特征抽取
+    x['age'].fillna(x['age'].mean(), inplace=True)
+
+    # 对于x转换成字典数据x.to_dict(orient="records")
+    # [{"pclass": "1st", "age": 29.00, "sex": "female"}, {}]
+
+    diction = DictVectorizer(sparse=False)
+
+    x = diction.fit_transform(x.to_dict(orient="records"))
+
+    print(diction.get_feature_names_out())
+    print(x)
+
+    # 分割训练集合测试集
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3)
+
+    # 进行决策树的建立和预测
+    dc = DecisionTreeClassifier(max_depth=5)
+
+    dc.fit(x_train, y_train)
+
+    print("预测的准确率为：", dc.score(x_test, y_test))
+
     return None
 
 
@@ -168,4 +212,7 @@ if __name__ == "__main__":
     # nbcls()
 
     # 代码4 决策树算法对鸢尾花进行分类
-    decision_iris()
+    # decision_iris()
+
+    # 代码5 决策树进行乘客生存预测
+    decisioncls()
